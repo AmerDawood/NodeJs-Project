@@ -4,38 +4,49 @@ const projectdata = require('../models/project.js');
 
 const Project= require('../models/project.js');
 const Task = require('../models/task.js');
+const jwt = require('jsonwebtoken');
+const { secret } = require("../token-config");
 
 
 const router= express.Router();
 
 
 const addTaskToProject = async (req, res) => {
-    const projectId = req.params.id;
-    const { title, description, priority, workHours, status } = req.body;
-  
-    try {
-      const project = await Project.findById(projectId);
-  
-      if (!project) {
-        return res.status(404).json({ message: "Project not found" });
-      }
-  
-      const newTask = new Task({
-        project_Id: projectId,
-        title,
-        description,
-        priority,
-        workHours,
-        status,
-      });
-  
-      await newTask.save();
-  
-      res.status(201).json(newTask);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
+  const projectId = req.params.id;
+  const { title, description, priority, workHours, status } = req.body;
+
+  try {
+    const token = req.headers.authorization;
+    if (!token || !token.startsWith('Bearer ')) {
+      return res.status(403).json({ message: "No token provided!" });
     }
-  };
+    const decoded = jwt.verify(token.split(' ')[1], secret);
+
+    const userId = decoded.id;
+
+    const project = await Project.findById(projectId);
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    const newTask = new Task({
+      project_Id: projectId,
+      title,
+      description,
+      priority,
+      workHours,
+      status,
+    });
+
+    // Include the user token in the headers when saving the new task
+    await newTask.save({ headers: { Authorization: `Bearer ${token.split(' ')[1]}` } });
+
+    res.status(201).json(newTask);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
   
     
 

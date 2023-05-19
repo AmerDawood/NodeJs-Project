@@ -9,10 +9,10 @@ const router = express.Router();
 
 
 // Tasks
-router.get('/:id', authJwt.verifyToken,task.getTasksByProjectId);
-router.post('/:id',authJwt.verifyToken, task.addTaskToProject);
-router.patch('/:id', authJwt.verifyToken,task.updateTaskStatus);
-router.delete('/:id',authJwt.verifyToken, task.deleteTask);
+router.get('/:id',task.getTasksByProjectId);
+router.post('/:id', task.addTaskToProject);
+router.patch('/:id',task.updateTaskStatus);
+router.delete('/:id',task.deleteTask);
 
 
 
