@@ -109,6 +109,40 @@ const addTaskToProject = async (req, res) => {
     };
 
 
+
+
+
+const getTaskById = async (req, res) => {
+  try {
+    const token = req.headers.authorization;
+    if (!token || !token.startsWith('Bearer ')) {
+      return res.status(403).send({
+        message: "No token provided!",
+      });
+    }
+    const decoded = jwt.verify(token.split(' ')[1], secret);
+
+    const taskId = req.params.id;
+
+    const task = await Task.findById(taskId);
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    // const tasks = await Task.find({ task_id: taskId });
+
+    const populatedProject = {
+      ...task._doc,
+      // tasks: tasks,
+    };
+
+    res.status(200).json(populatedProject);
+  } catch (error) {
+    res.status(403).json({ message: 'Invalid token!' });
+  }
+};
+
+
 module.exports.deleteTask =deleteTask;
 
 
@@ -119,3 +153,5 @@ module.exports.addTaskToProject= addTaskToProject;
 
 
 module.exports.getTasksByProjectId = getTasksByProjectId;
+module.exports.getTaskById = getTaskById;
+
