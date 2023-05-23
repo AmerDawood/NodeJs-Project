@@ -51,7 +51,7 @@ const createProject = async (req, res) => {
       user_id: userId,
       created_at: req.body.created_at,
       updated_at: req.body.updated_at,
-      hour: req.body.hour,
+      // hour: req.body.hour,
     });
 
     try {
@@ -87,10 +87,16 @@ const getProjectById = async (req, res) => {
     }
 
     const tasks = await Task.find({ project_Id: projectId });
+    const doneTasks = tasks.filter(task => task.status === 'done');
+    const doneTasksCount = doneTasks.length;
+    const doneTasksWorkHourSum = doneTasks.reduce((sum, task) => sum + parseInt(task.workHour), 0);
+
 
     const populatedProject = {
       ...project._doc,
       tasks: tasks,
+      doneTasksCount: doneTasksCount,
+      doneTasksWorkHourSum: doneTasksWorkHourSum,
     };
 
     res.status(200).json(populatedProject);
@@ -107,7 +113,6 @@ const getProjectById = async (req, res) => {
       name: req.body.name,
       details: req.body.details,
       status: req.body.status,
-      created_on: req.body.created_by,
       created_at: req.body.created_at,
       updated_at: req.body.updated_at,
     };

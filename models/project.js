@@ -23,10 +23,10 @@ const projectSchema = mongoose.Schema({
         type: Date,
         default: new Date(),
     },
-    hour: {
-        type: Date,
-        default: new Date(),
-    },
+    // hour: {
+    //     type: Date,
+    //     default: new Date(),
+    // },
 })
 
 var projectdata=mongoose.model('projectdata',projectSchema);

@@ -20,6 +20,10 @@ const taskSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    workHour: {
+        type: String,
+        required: false,
+    },
     project_Id: {
         type: String,
         required : false,

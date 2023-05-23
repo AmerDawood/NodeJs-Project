@@ -13,7 +13,7 @@ const router= express.Router();
 
 const addTaskToProject = async (req, res) => {
   const projectId = req.params.id;
-  const { title, description, priority, workHours, status } = req.body;
+  const { title, description, priority, workHour, status } = req.body;
 
   try {
     const token = req.headers.authorization;
@@ -35,7 +35,7 @@ const addTaskToProject = async (req, res) => {
       title,
       description,
       priority,
-      workHours,
+      workHour,
       status,
     });
 
